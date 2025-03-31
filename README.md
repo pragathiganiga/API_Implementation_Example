@@ -46,5 +46,3 @@ react-api-app/
 ## Contributing
 Feel free to submit pull requests to improve the project.
 
-## License
-This project is open-source under the MIT license.
