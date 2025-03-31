@@ -1,54 +1,133 @@
-<<<<<<< HEAD
-# API_Implementation_Example
-=======
-# React + TypeScript + Vite
+# React API Fetching App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a React application that fetches and displays posts from the JSONPlaceholder API.
 
-Currently, two official plugins are available:
+## Features
+- Fetch posts from `https://jsonplaceholder.typicode.com/posts`
+- Display the list of posts using reusable components
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Technologies Used
+- React (TypeScript)
+- Axios
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-username/react-api-app.git
+   cd react-api-app
+   ```
 
-- Configure the top-level `parserOptions` property like this:
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+3. Start the application:
+   ```sh
+   npm start
+   ```
+
+## File Structure
+```
+react-api-app/
+│── src/
+│   ├── components/
+│   │   ├── Card.tsx
+│   │   ├── Post.tsx
+│   ├── App.tsx
+│   ├── index.tsx
+│── package.json
+│── README.md
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Code Overview
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+### Post Component (`Post.tsx`)
+```typescript
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import Card from './Card';
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+interface Post {
+  id: number;
+  title: string;
+  body: string;
+}
+
+const Post: React.FC = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    axios.get('https://jsonplaceholder.typicode.com/posts')
+      .then((response) => {
+        setPosts(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+
+  return (
+    <div>
+      <h2>Posts</h2>
+      {posts.map((post) => (
+        <Card key={post.id} title={post.title} body={post.body} />
+      ))}
+    </div>
+  );
+};
+
+export default Post;
 ```
->>>>>>> f7b2fa8 (Initial commit)
+
+### Card Component (`Card.tsx`)
+```typescript
+import React from 'react';
+
+interface CardProps {
+  title: string;
+  body: string;
+}
+
+const Card: React.FC<CardProps> = ({ title, body }) => {
+  return (
+    <div style={{ border: '1px solid #ccc', padding: '10px', margin: '10px', borderRadius: '5px' }}>
+      <h3>{title}</h3>
+      <p>{body}</p>
+    </div>
+  );
+};
+
+export default Card;
+```
+
+### App Component (`App.tsx`)
+```typescript
+import React from 'react';
+import Post from './components/Post';
+
+const App: React.FC = () => {
+  return (
+    <div>
+      <h1>API Fetching App</h1>
+      <Post />
+    </div>
+  );
+};
+
+export default App;
+```
+
+## Contributing
+Feel free to submit pull requests to improve the project.
+
+## License
+This project is open-source under the MIT license.
